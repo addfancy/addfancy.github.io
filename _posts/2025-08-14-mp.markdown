@@ -31,3 +31,153 @@ tags:
 ## 二、技术实现方案
 
 ### 2.1 一键生成工具链
+推荐技术栈组合
+静态网站生成器：VitePress / VuePress / Astro
+UI 框架：Naive UI / Element Plus
+支付集成：Stripe / PayPal / 爱发电
+自动化：GitHub Actions
+### 2.2 核心功能模块
+| 模块 | 功能 | 技术实现 |
+|------|------|----------|
+| 软件展示 | 在线 Demo + 下载 | Vue 3 + iframe 嵌套 |
+| 自动化部署 | Git Push 触发构建 | GitHub Actions Workflow |
+| 收费墙 | 按功能解锁 | JSON 配置 + 前端鉴权 |
+| 数据统计 | 访问量/付费转化 | Google Analytics |
+
+---
+
+## 三、实战步骤（附代码片段）
+
+### 3.1 1. 创建 GitHub 仓库
+推荐仓库命名（直接生成访问域名）
+用户名.github.io → https://用户名.github.io
+
+或
+
+your-project → 需手动配置 Pages
+### 3.2 2. 自动化构建脚本（.github/workflows/deploy.yml）
+yaml
+
+name: Deploy to GitHub Pages
+
+on:
+
+push:
+
+branches: [ "main" ]
+
+jobs:
+
+build-and-deploy:
+
+runs-on: ubuntu-latest
+
+steps:
+
+uses: actions/checkout@v4
+name: Setup Node.jsuses: actions/setup-node@v4with:node-version: '20'
+name: Install & Buildrun: |npm installnpm run build
+name: Deployuses: peaceiris/actions-gh-pages@v3with:github_token: ${{ secrets.GITHUB_TOKEN }}publish_dir: ./dist
+### 3.3 3. 收费功能实现示例（前端）
+javascript
+
+// 功能解锁逻辑
+
+const features = {
+
+basic: { free: true, desc: "基础功能" },
+
+pro: {
+
+free: false,
+
+price: 9.9,
+
+desc: "高级功能",
+
+check: () => localStorage.getItem('pro_license')
+
+}
+
+}
+
+// 支付集成示例（Stripe）
+
+const handleProPurchase = async () => {
+
+const { sessionId } = await fetch('/api/create-checkout', {
+
+method: 'POST'
+
+}).then(res => res.json())
+
+const stripe = Stripe('your-publishable-key')
+
+await stripe.redirectToCheckout({ sessionId })
+
+}
+---
+
+## 四、变现策略组合拳
+
+### 4.1 直接盈利模式
+1. **GitHub Sponsors**  
+   ![赞助按钮](https://img.shields.io/badge/♥-Sponsor-f96854?logo=github)
+   
+2. **付费下载**  
+   - 基础版免费 + Pro 版 $9.9/年  
+   - 提供功能对比表格
+
+3. **定制开发服务**  
+   - 在 README 显著位置展示联系方式
+
+### 4.2 间接盈利模式
+- **联盟营销**：推荐开发工具赚取佣金
+- **广告位**：技术相关 Banner 广告
+- **知识付费**：配套教程/课程销售
+
+---
+
+## 五、优化技巧
+
+### 5.1 SEO 增强
+markdown
+
+<script type="application/ld+json">
+
+{
+
+"@context": "https://schema.org",
+
+"@type": "SoftwareSourceCode",
+
+"name": "Your Awesome Tool",
+
+"description": "一键生成解决方案...",
+
+"codeRepository": "https://github.com/your/repo"
+
+}
+
+</script>
+
+### 5.2 用户体验优化
+- 添加 **「在线试用」** 沙箱环境
+- 集成 **「一键部署」** 到 Vercel/Netlify
+- 提供 **「商业授权」** 购买通道
+
+---
+
+## 六、案例参考
+1. [VitePress 官方文档](https://vitepress.dev/)（技术文档变现）
+2. [Tabler UI](https://tabler.io/)（免费+付费组件库）
+3. [CodeSandbox](https://codesandbox.io/)（在线 IDE 服务）
+
+> 💡 **关键提示**：建议先积累 100+ GitHub Stars 再推出付费功能，初期可通过 **「捐赠解锁」** 模式测试市场需求
+
+---
+
+🔧 **工具推荐**：
+- [Framer](https://www.framer.com/) → 快速搭建官网
+- [Stripe Atlas](https://stripe.com/atlas) → 海外公司注册
+- [Paddle](https://paddle.com/) → 全球支付解决方案
